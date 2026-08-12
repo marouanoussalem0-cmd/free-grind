@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { useTranslation } from "react-i18next";
 import { AuthProvider } from "./contexts/AuthContext";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
@@ -289,6 +290,7 @@ export default function App() {
 				</SmoothScroll>
 			</ExploreModeProvider>
 			</PreferencesProvider>
+			<SpeedInsights />
 		</AuthProvider>
 	);
 }
