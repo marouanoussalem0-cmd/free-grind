@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 import { BaseDirectory, exists, readTextFile } from "@tauri-apps/plugin-fs";
 import { platform } from "@tauri-apps/plugin-os";
 
@@ -72,6 +72,11 @@ async function getTraceRuntimeContext(): Promise<RuntimeContext | null> {
 }
 
 export async function getRuntimeContext(): Promise<RuntimeContext> {
+    // Vercel serves the browser build without Tauri's native bridge. Avoid
+    // invoking native commands or querying the OS plugin in that runtime.
+    if (!isTauri()) {
+        return { mode: "child", instanceLabel: "default" };
+    }
     const maxAttempts = 20;
     const retryDelayMs = 100;
     let lastError: unknown;
