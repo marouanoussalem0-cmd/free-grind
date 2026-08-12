@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@fontsource-variable/ibm-plex-sans/index.css";
 import App from "./App";
@@ -64,6 +65,7 @@ void (async () => {
 							<App />
 						)}
 						<AppToaster />
+					<SpeedInsights />
 					</BrowserRouter>
 				</QueryClientProvider>
 			</CrashBoundary>

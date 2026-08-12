@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 import { platform } from "@tauri-apps/plugin-os";
 
 // --- STEALTH MODE / APP DISGUISE ---
@@ -42,11 +42,11 @@ function getBridge(): DisguiseBridge | undefined {
 }
 
 function isAndroidSupported(): boolean {
-	return platform() === "android" && typeof getBridge()?.setAppDisguise === "function";
+	return isTauri() && platform() === "android" && typeof getBridge()?.setAppDisguise === "function";
 }
 
 function isIosSupported(): boolean {
-	return platform() === "ios";
+	return isTauri() && platform() === "ios";
 }
 
 export function isAppDisguiseSupported(): boolean {

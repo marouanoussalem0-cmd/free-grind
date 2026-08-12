@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { listen } from "@tauri-apps/api/event";
 import { appLog } from "../utils/logger";
+import { isTauriRuntime } from "../services/tauriWebSocket";
 
 type NativePushNotificationDetail = {
 	event?: string;
@@ -174,16 +175,18 @@ export function PushNotificationBridge() {
 		// (conversationId, or "taps") it was posted with — see
 		// notification-patched/src/desktop.rs's `show_windows`.
 		let unlistenClicked: (() => void) | undefined;
-		void listen<string>("fg:notification-clicked", (event) => {
-			const group = event.payload;
-			const detail: NativePushNotificationDetail =
-				group === "taps"
-					? { event: "opened", action: "taps", conversationId: null, senderId: null }
-					: { event: "opened", action: `chat:${group}`, conversationId: group, senderId: null };
-			handleDetail(detail);
-		}).then((unlisten) => {
-			unlistenClicked = unlisten;
-		});
+		if (isTauriRuntime()) {
+			void listen<string>("fg:notification-clicked", (event) => {
+				const group = event.payload;
+				const detail: NativePushNotificationDetail =
+					group === "taps"
+						? { event: "opened", action: "taps", conversationId: null, senderId: null }
+						: { event: "opened", action: `chat:${group}`, conversationId: group, senderId: null };
+				handleDetail(detail);
+			}).then((unlisten) => {
+				unlistenClicked = unlisten;
+			});
+		}
 
 		return () => {
 			window.removeEventListener(
